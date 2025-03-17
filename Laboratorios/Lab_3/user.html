@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            width: 300px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #218838;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        td button {
+            background: #dc3545;
+            padding: 5px 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        td button:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Usuario" required>
+        <input type="password" id="loginPassword" placeholder="Contraseña" required>
+        <button type="submit">Ingresar</button>
+    </form>
+
+    <div id="userManagement" style="display: none;">
+        <h2>Gestión de Usuarios</h2>
+        <form id="userForm">
+            <input type="hidden" id="userId">
+            <input type="text" id="username" placeholder="Usuario" required>
+            <input type="text" id="name" placeholder="Nombre" required>
+            <button type="submit">Guardar</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        class User {
+            constructor(id, username, password, name) {
+                this.id = id;
+                this.username = username;
+                this.password = password;
+                this.name = name;
+            }
+
+            validatePassword(password) {
+                return this.password === password;
+            }
+        }
+
+        class UserController {
+            constructor() {
+                this.users = [new User(1, "admin", "admin123", "Administrador")];
+                this.idCounter = 2;
+            }
+
+            addUser(username, password, name) {
+                const newUser = new User(this.idCounter++, username, password, name);
+                this.users.push(newUser);
+                this.renderUsers();
+            }
+
+            editUser(id, username, password, name) {
+                const user = this.users.find(u => u.id === id);
+                if (user) {
+                    user.username = username;
+                    user.password = password;
+                    user.name = name;
+                    this.renderUsers();
+                }
+            }
+
+            deleteUser(id) {
+                this.users = this.users.filter(u => u.id !== id);
+                this.renderUsers();
+            }
+
+            renderUsers() {
+                const tableBody = document.getElementById('userTableBody');
+                tableBody.innerHTML = '';
+                this.users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>${user.username}</td>
+                        <td>${user.name}</td>
+                        <td>
+                            <button onclick="editUser(${user.id})">Editar</button>
+                            <button onclick="deleteUser(${user.id})">Eliminar</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+
+            validateLogin(username, password) {
+                return this.users.find(user => user.username === username && user.validatePassword(password));
+            }
+        }
+
+        const userController = new UserController();
+
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const id = document.getElementById('userId').value;
+            const username = document.getElementById('username').value;
+            const name = document.getElementById('name').value;
+            const password = "default123"; // Contraseña por defecto para nuevos usuarios
+            
+            if (id) {
+                userController.editUser(parseInt(id), username, password, name);
+            } else {
+                userController.addUser(username, password, name);
+            }
+            
+            this.reset();
+        });
+
+        function editUser(id) {
+            const user = userController.users.find(u => u.id === id);
+            if (user) {
+                document.getElementById('userId').value = user.id;
+                document.getElementById('username').value = user.username;
+                document.getElementById('name').value = user.name;
+            }
+        }
+
+        function deleteUser(id) {
+            userController.deleteUser(id);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (userController.validateLogin(username, password)) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('userManagement').style.display = 'block';
+            } else {
+                alert('Usuario o contraseña incorrectos');
+            }
+        });
+    </script>
+</body>
+</html>

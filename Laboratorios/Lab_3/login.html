@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login al Sistema</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4; }
+        .login-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1); }
+        .login-container h2 { text-align: center; }
+        .login-container input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        .login-container button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .login-container button:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Iniciar Sesión</h2>
+        <input type="text" id="username" placeholder="Usuario" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <button onclick="login()">Ingresar</button>
+        <p id="message" style="color: red; text-align: center;"></p>
+    </div>
+
+    <script>
+        const users = {
+            "admin": "1234",
+            "user": "pass"
+        };
+
+        let attempts = 0;
+        const maxAttempts = 3;
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const message = document.getElementById("message");
+
+            if (attempts >= maxAttempts) {
+                message.textContent = "Demasiados intentos. Acceso bloqueado.";
+                return;
+            }
+
+            if (users[username] && users[username] === password) {
+                alert("Acceso concedido.");
+                window.location.href = "dashboard.html";
+            } else {
+                attempts++;
+                message.textContent = `Credenciales incorrectas. Intento ${attempts}/${maxAttempts}`;
+                if (attempts >= maxAttempts) {
+                    message.textContent = "Demasiados intentos. Acceso bloqueado.";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

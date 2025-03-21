@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 
+      La siguiente meta etiqueta configura el viewport para diseño responsive:
+      - width=device-width: Hace que el ancho de la página se ajuste al ancho del dispositivo
+      - initial-scale=1.0: Establece el nivel de zoom inicial sin ampliar ni reducir
+      Esta configuración es esencial para que el sitio se vea correctamente en dispositivos móviles
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Gestión de Usuarios</title>
+    <!-- 
+      Enlace a la hoja de estilos CSS externa que contiene todos los estilos visuales de la aplicación.
+      La ruta "css/styles.css" es relativa a la ubicación del archivo HTML actual.
+    -->
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Sistema de Gestión de Usuarios</h1>
+
+      <!-- Sección de login -->
+      <section id="loginSection">
+        <h2>Iniciar Sesión</h2>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="loginUsername">Usuario:</label>
+            <input type="text" id="loginUsername" name="username" required />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Contraseña:</label>
+            <input
+              type="password"
+              id="loginPassword"
+              name="password"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <button type="submit">Iniciar Sesión</button>
+            <p id="loginError" class="error"></p>
+            <p id="dbStatus"></p>
+          </div>
+        </form>
+      </section>
+
+      <!-- Sección de la aplicación (oculta inicialmente) -->
+      <section id="appSection" style="display: none">
+        <div class="user-info">
+          <span id="currentUser">Hola, Usuario</span>
+          <button id="logoutBtn">Cerrar Sesión</button>
+        </div>
+
+        <h2>Gestión de Usuarios</h2>
+
+        <!-- Formulario para añadir/editar usuarios -->
+        <div class="card">
+          <h3 id="formTitle">Añadir Usuario</h3>
+          <form id="userForm">
+            <input type="hidden" id="userId" />
+            <div class="form-group">
+              <label for="username">Nombre de Usuario:</label>
+              <input type="text" id="username" required />
+            </div>
+            <div class="form-group">
+              <label for="name">Nombre Completo:</label>
+              <input type="text" id="name" required />
+            </div>
+            <div class="form-group">
+              <label for="userType">Tipo de Usuario:</label>
+              <select id="userType" required>
+                <!-- Las opciones se cargarán dinámicamente desde JavaScript -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="password">Contraseña:</label>
+              <input type="password" id="password" />
+              <span class="note"
+                >Deja en blanco para mantener la contraseña actual (solo para
+                edición)</span
+              >
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirmar Contraseña:</label>
+              <input type="password" id="confirmPassword" />
+              <p id="passwordError" class="error"></p>
+            </div>
+            <div class="form-group">
+              <button type="submit">Guardar</button>
+              <button type="button" id="cancelEdit" style="display: none">
+                Cancelar
+              </button>
+            </div>
+            <p id="userMessage" class="message"></p>
+          </form>
+        </div>
+
+        <!-- Tabla de usuarios -->
+        <div class="card mt-20">
+          <h3>Lista de Usuarios</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody">
+              <!-- Los usuarios se cargarán aquí dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script>
+      // Inicializar la base de datos al cargar la página
+      document.addEventListener("DOMContentLoaded", function () {
+        const dbStatus = document.getElementById("dbStatus");
+
+        // Inicializar interfaz
+        if (dbStatus) {
+          dbStatus.textContent = "Conectando a la base de datos...";
+          dbStatus.style.color = "#666";
+        }
+
+        // Intentar inicializar la base de datos
+        fetch("api.php?action=initialize_db")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              dbStatus.textContent = "✅ Conectado a MySQL";
+              dbStatus.style.color = "green";
+
+              // Si la conexión fue exitosa, intentar cargar tipos de usuario
+              fetch("api.php?action=get_user_types")
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.success) {
+                    console.log("Tipos de usuario cargados:", data.data);
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error al cargar tipos de usuario:", error);
+                });
+
+              // Y también cargar los usuarios
+              return fetch("api.php?action=get_users");
+            } else {
+              dbStatus.textContent =
+                "❌ Error de conexión a la BD: " + data.message;
+              dbStatus.style.color = "red";
+              throw new Error(data.message);
+            }
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              console.log(
+                `Base de datos cargada. ${data.data.length} usuarios encontrados.`
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Error al inicializar la base de datos:", error);
+            if (dbStatus) {
+              dbStatus.textContent =
+                "❌ Error al conectar con la base de datos";
+              dbStatus.style.color = "red";
+            }
+          });
+      });
+    </script>
+  </body>
+</html>

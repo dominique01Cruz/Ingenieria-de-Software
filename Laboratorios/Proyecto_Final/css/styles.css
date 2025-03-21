@@ -1,0 +1,359 @@
+/* Estilos generales */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1,
+h2,
+h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 2rem;
+  text-align: center;
+  margin-top: 20px;
+}
+
+h2 {
+  font-size: 1.6rem;
+  border-bottom: 2px solid #e6e6e6;
+  padding-bottom: 10px;
+}
+
+h3 {
+  font-size: 1.3rem;
+}
+
+/* Sección de login */
+#loginSection {
+  max-width: 450px;
+  margin: 40px auto;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Sección de aplicación */
+#appSection {
+  margin-top: 20px;
+}
+
+/* Información de usuario y botón de logout */
+.user-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#currentUser {
+  font-weight: 600;
+  color: #3498db;
+}
+
+/* Cards (tarjetas) para contenido */
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+/* Formularios */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+  text-align: left;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: #fff;
+}
+
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6"><path d="M0 0L12 0L6 6Z" fill="%23666"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 6px;
+  padding-right: 30px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+/* Estilo para elementos deshabilitados */
+.form-group input:disabled,
+.form-group select:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+  opacity: 0.7;
+  border-color: #ddd;
+}
+
+.note {
+  display: block;
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 5px;
+  text-align: left;
+}
+
+/* Botones */
+button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  background-color: #b3c5d1;
+  cursor: not-allowed;
+  opacity: 0.7;
+  box-shadow: none;
+}
+
+button[type="button"] {
+  background-color: #95a5a6;
+}
+
+button[type="button"]:hover {
+  background-color: #7f8c8d;
+}
+
+#logoutBtn {
+  background-color: #e74c3c;
+}
+
+#logoutBtn:hover {
+  background-color: #c0392b;
+}
+
+/* Tablas */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+th,
+td {
+  padding: 14px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+th {
+  background-color: #f1f1f1;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Botones en tabla */
+td button {
+  padding: 8px 12px;
+  margin-right: 5px;
+  font-size: 14px;
+  box-shadow: none;
+}
+
+.edit-btn {
+  background-color: #f39c12;
+}
+
+.edit-btn:hover {
+  background-color: #d35400;
+}
+
+/* Mensajes */
+.error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  text-align: left;
+}
+
+.message {
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 15px;
+  font-weight: 500;
+  text-align: center;
+  background-color: #f8f9fa;
+  border-left: 4px solid #3498db;
+}
+
+.message.error {
+  background-color: #fee;
+  color: #e74c3c;
+  border-left: 4px solid #e74c3c;
+  text-align: center;
+}
+
+.message.success {
+  background-color: #eeffee;
+  color: #27ae60;
+  border-left: 4px solid #27ae60;
+}
+
+/* Mensajes en tabla */
+.error-message {
+  color: #e74c3c;
+  padding: 15px;
+  text-align: center;
+  font-style: italic;
+}
+
+.permission-denied {
+  background-color: #fee;
+  padding: 15px;
+  text-align: center;
+  color: #e74c3c;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+
+/* Estado de la base de datos */
+#dbStatus {
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+/* Tooltips para explicar permisos */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.8rem;
+  font-weight: normal;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Estilos específicos para dispositivos móviles */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 10px;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .form-group input,
+  .form-group select,
+  button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  td button {
+    padding: 6px 10px;
+    margin-bottom: 5px;
+    display: inline-block;
+  }
+}

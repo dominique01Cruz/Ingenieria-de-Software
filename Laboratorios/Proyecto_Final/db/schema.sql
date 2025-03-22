@@ -3,6 +3,7 @@
 -- Create database if not exists
 CREATE DATABASE IF NOT EXISTS facturacion;
 
+-- drop database if exists facturacion;    
 -- Use database
 USE facturacion;
 

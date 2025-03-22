@@ -4,10 +4,11 @@ Sistema simple para gestión de usuarios con autenticación y operaciones CRUD.
 
 ## Características
 
-- Sistema de login con usuario y contraseña
+- Sistema de inicio de sesión con usuario y contraseña
 - Gestión de usuarios (crear, editar, eliminar)
-- Interfaz responsive y moderna
+- Interfaz responsiva y moderna
 - Almacenamiento en MySQL
+- Sistema de permisos basado en roles
 
 ## Estructura del Proyecto
 
@@ -41,6 +42,67 @@ Proyecto_Final/
 
 - **Usuario**: admin
 - **Contraseña**: admin123
+
+## Sistema de Roles y Permisos
+
+El sistema implementa cuatro roles de usuario, cada uno con diferentes niveles de acceso:
+
+### 1. Administrador
+
+- **Permisos completos**:
+  - Ver todos los usuarios con información detallada
+  - Agregar nuevos usuarios
+  - Editar cualquier usuario (excepto el ID 1, que es el superadmin)
+  - Eliminar usuarios (excepto a sí mismo y el superadmin)
+- **Interfaz**: Panel completo de gestión con todas las opciones habilitadas
+
+### 2. Contador
+
+- **Permisos limitados**:
+  - Ver nombres de usuarios (información reducida)
+  - Agregar nuevos usuarios **solo con rol de contador o invitado**
+  - Editar únicamente su propio perfil
+  - No puede eliminar usuarios
+- **Interfaz**: Panel de contador con formulario oculto, botón "Añadir Usuario" visible
+
+### 3. Vendedor
+
+- **Permisos moderados**:
+  - Ver información de usuarios (sin ID ni fecha de creación)
+  - Agregar nuevos usuarios **con rol de vendedor, contador o invitado**
+  - Editar usuarios (excepto el ID 1, que es el superadmin)
+  - No puede eliminar usuarios
+- **Interfaz**: Panel de gestión con información relevante y capacidad de edición
+
+### 4. Invitado
+
+- **Permisos mínimos**:
+  - Ver únicamente nombres de usuarios (información reducida)
+  - Editar solo su propio perfil (nombre y contraseña)
+  - No puede cambiar su nombre de usuario ni tipo de usuario
+  - No puede agregar ni eliminar usuarios
+- **Interfaz**: Panel de usuario simplificado, sin botón "Añadir Usuario"
+
+## Detalles de Implementación
+
+### Vista de Tabla
+
+- **Administrador**: Visualiza todos los campos (ID, Usuario, Nombre, Tipo, Fecha, Acciones)
+- **Vendedor**: Visualiza campos relevantes (Usuario, Nombre, Tipo, Acciones)
+- **Contador/Invitado**: Visualizan solo el nombre de los usuarios y tienen acceso a editar su propio perfil
+
+### Formulario de Edición
+
+- Para todos los usuarios, después de guardar o cancelar la edición, el formulario se oculta
+- El botón "Añadir Usuario" está disponible para administradores, vendedores y contadores
+- Cuando un usuario edita su propio perfil, se actualiza automáticamente su nombre en la barra superior
+
+### Validaciones de Seguridad
+
+- Se realizan comprobaciones de permisos tanto en el cliente como en el servidor
+- Los usuarios no pueden forzar acciones no permitidas desde la consola o modificando el código
+- Cada acción requiere autenticación y verificación de permisos
+- **Control de escalada de privilegios**: Los usuarios solo pueden crear nuevos usuarios con un nivel de permisos igual o inferior al suyo
 
 ## Requisitos del Sistema
 

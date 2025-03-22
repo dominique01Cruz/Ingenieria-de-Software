@@ -15,166 +15,1016 @@
       La ruta "css/styles.css" es relativa a la ubicación del archivo HTML actual.
     -->
     <link rel="stylesheet" href="css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      /* Estilos adicionales para mensajes */
+      .info {
+        padding: 10px;
+        margin: 10px 0;
+        background-color: #e1f5fe;
+        color: #0277bd;
+        border-left: 4px solid #0277bd;
+        border-radius: 4px;
+      }
+    </style>
   </head>
   <body>
-    <div class="container">
-      <h1>Sistema de Gestión de Usuarios</h1>
-
-      <!-- Sección de login -->
-      <section id="loginSection">
-        <h2>Iniciar Sesión</h2>
-        <form id="loginForm">
-          <div class="form-group">
-            <label for="loginUsername">Usuario:</label>
-            <input type="text" id="loginUsername" name="username" required />
-          </div>
-          <div class="form-group">
-            <label for="loginPassword">Contraseña:</label>
-            <input
-              type="password"
-              id="loginPassword"
-              name="password"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <button type="submit">Iniciar Sesión</button>
-            <p id="loginError" class="error"></p>
-            <p id="dbStatus"></p>
-          </div>
-        </form>
-      </section>
-
-      <!-- Sección de la aplicación (oculta inicialmente) -->
-      <section id="appSection" style="display: none">
-        <div class="user-info">
-          <span id="currentUser">Hola, Usuario</span>
-          <button id="logoutBtn">Cerrar Sesión</button>
+    <!-- Header -->
+    <header class="header">
+      <div class="container header-content">
+        <div class="logo">
+          <a href="#">
+            <h1>Sistema de <span>Gestión</span></h1>
+          </a>
         </div>
+        <nav class="main-nav">
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="#" class="nav-link active">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" id="nav-users">Usuarios</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">Documentación</a>
+            </li>
+          </ul>
+        </nav>
+        <div class="header-actions">
+          <div id="currentUserContainer" style="display: none">
+            <span>Bienvenido, <span id="currentUser"></span></span>
+            <button id="logoutBtn" class="btn btn-sm">Cerrar sesión</button>
+          </div>
+        </div>
+        <div class="nav-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </div>
+    </header>
 
-        <h2>Gestión de Usuarios</h2>
-
-        <!-- Formulario para añadir/editar usuarios -->
-        <div class="card">
-          <h3 id="formTitle">Añadir Usuario</h3>
-          <form id="userForm">
-            <input type="hidden" id="userId" />
+    <div class="container">
+      <!-- Login Section -->
+      <section id="loginSection" class="hero">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Bienvenido al Sistema</h1>
+            <p>
+              Por favor, inicia sesión para acceder al panel de administración
+              de usuarios.
+            </p>
             <div class="form-group">
-              <label for="username">Nombre de Usuario:</label>
-              <input type="text" id="username" required />
+              <label for="loginUsername">Usuario</label>
+              <input
+                type="text"
+                id="loginUsername"
+                placeholder="Ingresa tu nombre de usuario"
+              />
             </div>
             <div class="form-group">
-              <label for="name">Nombre Completo:</label>
-              <input type="text" id="name" required />
-            </div>
-            <div class="form-group">
-              <label for="userType">Tipo de Usuario:</label>
-              <select id="userType" required>
-                <!-- Las opciones se cargarán dinámicamente desde JavaScript -->
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="password">Contraseña:</label>
-              <input type="password" id="password" />
+              <label for="loginPassword">Contraseña</label>
+              <input
+                type="password"
+                id="loginPassword"
+                placeholder="Ingresa tu contraseña"
+              />
               <span class="note"
-                >Deja en blanco para mantener la contraseña actual (solo para
-                edición)</span
+                >El usuario predeterminado es admin/admin123</span
               >
             </div>
-            <div class="form-group">
-              <label for="confirmPassword">Confirmar Contraseña:</label>
-              <input type="password" id="confirmPassword" />
-              <p id="passwordError" class="error"></p>
+            <div class="hero-buttons">
+              <button id="loginBtn" type="button">Iniciar sesión</button>
             </div>
-            <div class="form-group">
-              <button type="submit">Guardar</button>
-              <button type="button" id="cancelEdit" style="display: none">
+            <div id="dbStatus" class="message" style="display: none"></div>
+          </div>
+          <div class="hero-image">
+            <img
+              src="https://via.placeholder.com/500x300?text=Sistema+de+Gestión"
+              alt="Sistema de Gestión"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- App Section -->
+      <section id="appSection" style="display: none" class="features">
+        <div class="section-header">
+          <h2 id="userSectionTitle">Panel de Administración</h2>
+          <div class="section-divider"></div>
+          <p id="userSectionSubtitle">Gestiona los usuarios del sistema</p>
+        </div>
+
+        <!-- User Management -->
+        <div class="card">
+          <div class="user-info flex space-between align-center">
+            <h3 id="userListTitle">Gestión de Usuarios</h3>
+            <button id="toggleFormBtn" class="btn-sm" style="display: none">
+              Añadir Usuario
+            </button>
+          </div>
+
+          <!-- User Form -->
+          <div id="userForm">
+            <h4 id="userFormTitle">Agregar/Editar Usuario</h4>
+            <input type="hidden" id="userId" />
+            <div class="form-row">
+              <div class="form-group">
+                <label for="username">Nombre de Usuario</label>
+                <input
+                  type="text"
+                  id="username"
+                  placeholder="Nombre de usuario único"
+                />
+              </div>
+              <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Contraseña segura"
+                />
+                <span class="note"
+                  >Dejar en blanco para mantener la contraseña actual al
+                  editar</span
+                >
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Nombre Completo</label>
+                <input type="text" id="name" placeholder="Nombre completo" />
+              </div>
+              <div class="form-group">
+                <label for="userType">Tipo de Usuario</label>
+                <select id="userType">
+                  <option value="administrador">Administrador</option>
+                  <option value="contador">Contador</option>
+                  <option value="vendedor">Vendedor</option>
+                  <option value="invitado">Invitado</option>
+                </select>
+                <span class="note">
+                  <span class="tooltip">
+                    ¿Qué permisos tiene cada tipo?
+                    <span class="tooltiptext">
+                      Administrador: Control total<br />
+                      Contador: Sin eliminar usuarios<br />
+                      Vendedor: Edición limitada<br />
+                      Invitado: Solo visualización
+                    </span>
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="form-group mt-20">
+              <button id="saveUserBtn">Guardar Usuario</button>
+              <button
+                id="cancelEditBtn"
+                type="button"
+                class="btn-secondary"
+                style="display: none"
+              >
                 Cancelar
               </button>
             </div>
-            <p id="userMessage" class="message"></p>
-          </form>
-        </div>
+          </div>
 
-        <!-- Tabla de usuarios -->
-        <div class="card mt-20">
-          <h3>Lista de Usuarios</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Nombre</th>
-                <th>Tipo</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="userTableBody">
-              <!-- Los usuarios se cargarán aquí dinámicamente -->
-            </tbody>
-          </table>
+          <!-- Users Table -->
+          <div class="product-table-container mt-20">
+            <h4>Usuarios Registrados</h4>
+            <table id="usersTable" class="product-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Usuario</th>
+                  <th>Nombre</th>
+                  <th>Tipo</th>
+                  <th>Fecha Creación</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Los usuarios se cargarán aquí dinámicamente -->
+              </tbody>
+            </table>
+            <div id="tableError" class="error" style="display: none"></div>
+          </div>
         </div>
       </section>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="container footer-content">
+          <div class="footer-section">
+            <div class="footer-logo">
+              <h2>Sistema de <span>Gestión</span></h2>
+            </div>
+            <p>
+              Plataforma moderna para la administración y gestión eficiente de
+              usuarios. Desarrollado como parte del curso de Ingeniería de
+              Software.
+            </p>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Enlaces Rápidos</h4>
+            <ul class="footer-links">
+              <li><a href="#">Inicio</a></li>
+              <li><a href="#">Documentación</a></li>
+              <li><a href="#">API</a></li>
+              <li><a href="#">Políticas de Privacidad</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Contacto</h4>
+            <ul class="footer-contact">
+              <li>
+                <i class="fas fa-map-marker-alt"></i> Universidad XYZ, Facultad
+                de Ingeniería
+              </li>
+              <li><i class="fas fa-envelope"></i> contacto@ejemplo.com</li>
+              <li><i class="fas fa-phone"></i> +123 456 7890</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container footer-bottom-content">
+          <p>
+            &copy; 2023 Sistema de Gestión de Usuarios. Todos los derechos
+            reservados.
+          </p>
+          <div class="footer-bottom-links">
+            <a href="#">Términos</a>
+            <a href="#">Privacidad</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top">
+      <i class="fas fa-arrow-up"></i>
+    </a>
+
     <!-- Scripts -->
-    <script src="js/app.js"></script>
     <script>
-      // Inicializar la base de datos al cargar la página
       document.addEventListener("DOMContentLoaded", function () {
+        // Inicializar variables
+        let loggedInUser = null;
+
+        // Elementos del DOM
+        const loginSection = document.getElementById("loginSection");
+        const appSection = document.getElementById("appSection");
+        const currentUserContainer = document.getElementById(
+          "currentUserContainer"
+        );
+        const currentUserSpan = document.getElementById("currentUser");
+
+        // Botones
+        const loginBtn = document.getElementById("loginBtn");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const saveUserBtn = document.getElementById("saveUserBtn");
+        const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+        // Formularios
+        const loginUsername = document.getElementById("loginUsername");
+        const loginPassword = document.getElementById("loginPassword");
         const dbStatus = document.getElementById("dbStatus");
 
-        // Inicializar interfaz
-        if (dbStatus) {
-          dbStatus.textContent = "Conectando a la base de datos...";
-          dbStatus.style.color = "#666";
+        // Formulario de usuario
+        const userId = document.getElementById("userId");
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+        const name = document.getElementById("name");
+        const userType = document.getElementById("userType");
+
+        // Tabla
+        const usersTable = document.getElementById("usersTable");
+        const tableError = document.getElementById("tableError");
+
+        // Toggle de navegación para móviles
+        const navToggle = document.querySelector(".nav-toggle");
+        const mainNav = document.querySelector(".main-nav");
+
+        if (navToggle) {
+          navToggle.addEventListener("click", function () {
+            mainNav.classList.toggle("active");
+          });
         }
 
-        // Intentar inicializar la base de datos
-        fetch("api.php?action=initialize_db")
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              dbStatus.textContent = "✅ Conectado a MySQL";
-              dbStatus.style.color = "green";
+        // Botón Back to Top
+        const backToTop = document.querySelector(".back-to-top");
 
-              // Si la conexión fue exitosa, intentar cargar tipos de usuario
-              fetch("api.php?action=get_user_types")
-                .then((response) => response.json())
-                .then((data) => {
-                  if (data.success) {
-                    console.log("Tipos de usuario cargados:", data.data);
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error al cargar tipos de usuario:", error);
-                });
+        window.addEventListener("scroll", function () {
+          if (window.pageYOffset > 300) {
+            backToTop.classList.add("active");
+          } else {
+            backToTop.classList.remove("active");
+          }
+        });
 
-              // Y también cargar los usuarios
-              return fetch("api.php?action=get_users");
+        backToTop.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        // Funciones para comprobar el estado de la base de datos
+        const checkDbStatus = async () => {
+          try {
+            const response = await fetch("api.php?action=check_db");
+            const data = await response.json();
+
+            if (data.status === "success") {
+              dbStatus.textContent = "Base de datos inicializada correctamente";
+              dbStatus.className = "message";
             } else {
               dbStatus.textContent =
-                "❌ Error de conexión a la BD: " + data.message;
-              dbStatus.style.color = "red";
-              throw new Error(data.message);
+                "La base de datos no está inicializada. Inicializando...";
+              dbStatus.className = "info";
+
+              // Inicializar la base de datos automáticamente
+              try {
+                const initResponse = await fetch(
+                  "api.php?action=initialize_db"
+                );
+                const initData = await initResponse.json();
+
+                if (initData.status === "success") {
+                  dbStatus.textContent =
+                    "Base de datos inicializada correctamente";
+                  dbStatus.className = "message";
+                } else {
+                  dbStatus.textContent =
+                    "Error al inicializar la base de datos: " +
+                    initData.message;
+                  dbStatus.className = "error";
+                }
+              } catch (error) {
+                dbStatus.textContent =
+                  "Error al inicializar la base de datos: " + error.message;
+                dbStatus.className = "error";
+              }
             }
-          })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              console.log(
-                `Base de datos cargada. ${data.data.length} usuarios encontrados.`
-              );
+            dbStatus.style.display = "block";
+          } catch (error) {
+            dbStatus.textContent =
+              "Error al verificar el estado de la base de datos: " +
+              error.message;
+            dbStatus.className = "error";
+            dbStatus.style.display = "block";
+          }
+        };
+
+        // Inicia sesión
+        loginBtn.addEventListener("click", async () => {
+          if (!loginUsername.value || !loginPassword.value) {
+            alert("Por favor ingresa usuario y contraseña");
+            return;
+          }
+
+          try {
+            const response = await fetch("api.php?action=login", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                username: loginUsername.value,
+                password: loginPassword.value,
+              }),
+            });
+
+            const data = await response.json();
+
+            if (data.status === "success") {
+              loggedInUser = data.user;
+              loadUserInterface();
+              loadUsers();
+            } else {
+              alert("Error: " + data.message);
             }
-          })
-          .catch((error) => {
-            console.error("Error al inicializar la base de datos:", error);
-            if (dbStatus) {
-              dbStatus.textContent =
-                "❌ Error al conectar con la base de datos";
-              dbStatus.style.color = "red";
+          } catch (error) {
+            alert("Error al iniciar sesión: " + error.message);
+          }
+        });
+
+        // Cierra sesión
+        logoutBtn.addEventListener("click", async () => {
+          try {
+            const response = await fetch("api.php?action=logout");
+            const data = await response.json();
+
+            if (data.status === "success") {
+              loggedInUser = null;
+              loginSection.style.display = "block";
+              appSection.style.display = "none";
+              currentUserContainer.style.display = "none";
+              loginUsername.value = "";
+              loginPassword.value = "";
+            } else {
+              alert("Error al cerrar sesión: " + data.message);
+            }
+          } catch (error) {
+            alert("Error al cerrar sesión: " + error.message);
+          }
+        });
+
+        // Carga la interfaz según el tipo de usuario
+        function loadUserInterface() {
+          // Ocultar sección de login y mostrar sección de aplicación
+          loginSection.style.display = "none";
+          appSection.style.display = "block";
+          currentUserContainer.style.display = "block";
+          currentUserSpan.textContent = loggedInUser.name;
+
+          const toggleFormBtn = document.getElementById("toggleFormBtn");
+
+          // Ajustar las opciones del tipo de usuario
+          adjustUserTypeOptions();
+
+          // Configura la interfaz según el tipo de usuario
+          if (loggedInUser.user_type === "invitado") {
+            // Para usuarios invitados ocultar completamente el formulario y su título
+            document.getElementById("userForm").style.display = "none";
+            toggleFormBtn.style.display = "none"; // Ocultar botón para invitados
+
+            // Cambiar el título de las secciones
+            document.getElementById("userSectionTitle").textContent =
+              "Panel de Usuario";
+            document.getElementById("userSectionSubtitle").textContent =
+              "Visualiza la información disponible";
+            document.getElementById("userListTitle").textContent =
+              "Listado de Usuarios";
+          } else if (loggedInUser.user_type === "contador") {
+            // Para contador: inicialmente oculto el formulario pero mostrar botón para agregar
+            document.getElementById("userForm").style.display = "none";
+            toggleFormBtn.style.display = "block"; // Mostrar botón para contadores
+
+            // Cambiar el título de las secciones
+            document.getElementById("userSectionTitle").textContent =
+              "Panel de Contador";
+            document.getElementById("userSectionSubtitle").textContent =
+              "Gestiona usuarios del sistema";
+            document.getElementById("userListTitle").textContent =
+              "Listado de Usuarios";
+          } else {
+            // Para otros tipos de usuarios (admin, vendedor)
+            document.getElementById("userForm").style.display = "none"; // Inicialmente oculto
+            toggleFormBtn.style.display = "block"; // Mostrar botón para no invitados
+            document.getElementById("userFormTitle").textContent =
+              "Agregar/Editar Usuario";
+            document.getElementById("saveUserBtn").textContent =
+              "Guardar Usuario";
+
+            // Restaurar títulos originales
+            document.getElementById("userSectionTitle").textContent =
+              "Gestión de Usuarios";
+            document.getElementById("userSectionSubtitle").textContent =
+              "Administra los usuarios del sistema";
+            document.getElementById("userListTitle").textContent =
+              "Listado de Usuarios";
+          }
+        }
+
+        // Configurar el botón para mostrar/ocultar el formulario (fuera de loadUserInterface)
+        document
+          .getElementById("toggleFormBtn")
+          .addEventListener("click", () => {
+            const userForm = document.getElementById("userForm");
+            if (userForm.style.display === "none") {
+              userForm.style.display = "block";
+              resetUserForm(); // Asegurarse de que el formulario esté limpio
+            } else {
+              userForm.style.display = "none";
             }
           });
+
+        // Carga los usuarios
+        const loadUsers = async () => {
+          try {
+            const response = await fetch("api.php?action=get_users");
+            const data = await response.json();
+
+            if (data.status === "success") {
+              // Limpia la tabla
+              const tbody = usersTable.querySelector("tbody");
+              tbody.innerHTML = "";
+
+              // Ajusta los encabezados de la tabla según el tipo de usuario
+              const tableHeaders = usersTable.querySelector("thead tr");
+              if (
+                loggedInUser.user_type === "invitado" ||
+                loggedInUser.user_type === "contador"
+              ) {
+                tableHeaders.innerHTML = `
+                  <th>Nombre</th>
+                  <th>Acciones</th>
+                `;
+              } else if (loggedInUser.user_type === "vendedor") {
+                // Para vendedor, vista similar a contador pero sin ID ni Fecha
+                tableHeaders.innerHTML = `
+                  <th>Usuario</th>
+                  <th>Nombre</th>
+                  <th>Tipo</th>
+                  <th>Acciones</th>
+                `;
+              } else {
+                tableHeaders.innerHTML = `
+                  <th>ID</th>
+                  <th>Usuario</th>
+                  <th>Nombre</th>
+                  <th>Tipo</th>
+                  <th>Fecha Creación</th>
+                  <th>Acciones</th>
+                `;
+              }
+
+              // Agrega los usuarios
+              data.users.forEach((user) => {
+                const tr = document.createElement("tr");
+
+                if (loggedInUser.user_type === "invitado") {
+                  // Si es invitado, mostrar nombre (no username) y botón para editar su propio perfil
+                  tr.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>
+                      ${
+                        user.id === loggedInUser.id
+                          ? `<button onclick="editUser(${user.id})" class="btn-sm">Editar</button>`
+                          : ""
+                      }
+                    </td>
+                  `;
+                } else if (loggedInUser.user_type === "contador") {
+                  // Si es contador, mostrar nombre y botón para editar su propio perfil
+                  tr.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>
+                      ${
+                        user.id === loggedInUser.id
+                          ? `<button onclick="editUser(${user.id})" class="btn-sm">Editar</button>`
+                          : ""
+                      }
+                    </td>
+                  `;
+                } else if (loggedInUser.user_type === "vendedor") {
+                  // Para vendedor, mostrar información sin ID ni fecha
+                  tr.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.name}</td>
+                    <td>${translateUserType(user.user_type)}</td>
+                    <td>
+                      <button onclick="editUser(${user.id})" class="btn-sm" ${
+                    canEditUser(user.id) ? "" : "disabled"
+                  }>Editar</button>
+                    </td>
+                  `;
+                } else {
+                  // Para administrador
+                  tr.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.name}</td>
+                    <td>${translateUserType(user.user_type)}</td>
+                    <td>${formatDate(user.created_at)}</td>
+                    <td>
+                      <button onclick="editUser(${user.id})" class="btn-sm" ${
+                    canEditUser(user.id) ? "" : "disabled"
+                  }>Editar</button>
+                      <button onclick="deleteUser(${
+                        user.id
+                      })" class="btn-sm btn-secondary" ${
+                    canDeleteUser(user.id) ? "" : "disabled"
+                  }>Eliminar</button>
+                    </td>
+                  `;
+                }
+
+                tbody.appendChild(tr);
+              });
+
+              tableError.style.display = "none";
+            } else if (
+              data.status === "error" &&
+              data.code === "not_authenticated"
+            ) {
+              loggedInUser = null;
+              loginSection.style.display = "block";
+              appSection.style.display = "none";
+              currentUserContainer.style.display = "none";
+              alert(
+                "La sesión ha expirado. Por favor, inicia sesión nuevamente."
+              );
+            } else {
+              tableError.textContent =
+                "Error al cargar usuarios: " + data.message;
+              tableError.style.display = "block";
+            }
+          } catch (error) {
+            tableError.textContent =
+              "Error al cargar usuarios: " + error.message;
+            tableError.style.display = "block";
+          }
+        };
+
+        // Guarda un usuario
+        saveUserBtn.addEventListener("click", async () => {
+          // Validar que el usuario tenga permiso para agregar/editar
+          if (
+            loggedInUser.user_type === "contador" &&
+            userId.value &&
+            parseInt(userId.value) !== loggedInUser.id
+          ) {
+            alert("Como contador, solo puedes editar tu propio perfil");
+            return;
+          }
+
+          if (!username.value || !name.value) {
+            alert("Por favor completa los campos obligatorios");
+            return;
+          }
+
+          const userData = {
+            id: userId.value ? parseInt(userId.value) : null,
+            username: username.value,
+            name: name.value,
+            user_type: userType.value,
+          };
+
+          if (password.value) {
+            userData.password = password.value;
+          }
+
+          // Si el usuario es invitado y está editando su propio perfil,
+          // asegurarse de que no cambie ciertos datos
+          if (
+            (loggedInUser.user_type === "invitado" ||
+              (loggedInUser.user_type === "contador" &&
+                userData.id === loggedInUser.id)) &&
+            userData.id === loggedInUser.id
+          ) {
+            // Conservar el nombre de usuario y tipo de usuario original
+            userData.username = loggedInUser.username;
+            userData.user_type = loggedInUser.user_type;
+          }
+
+          try {
+            const action = userId.value ? "update_user" : "add_user";
+            const response = await fetch(`api.php?action=${action}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(userData),
+            });
+
+            const data = await response.json();
+
+            if (data.status === "success") {
+              resetUserForm();
+              loadUsers();
+
+              // Ocultar el formulario después de guardar para cualquier tipo de usuario
+              document.getElementById("userForm").style.display = "none";
+
+              // Mostrar el botón de toggle para usuarios no invitados
+              if (loggedInUser.user_type !== "invitado") {
+                const toggleFormBtn = document.getElementById("toggleFormBtn");
+                toggleFormBtn.textContent = "Añadir Usuario";
+                toggleFormBtn.style.display = "block";
+              }
+
+              // Si el usuario invitado actualizó su perfil, actualizar los datos de sesión local
+              if (
+                (loggedInUser.user_type === "invitado" ||
+                  loggedInUser.user_type === "contador") &&
+                userData.id === loggedInUser.id
+              ) {
+                loggedInUser.name = userData.name;
+                currentUserSpan.textContent = userData.name;
+              }
+            } else {
+              alert("Error: " + data.message);
+            }
+          } catch (error) {
+            alert("Error al guardar usuario: " + error.message);
+          }
+        });
+
+        // Cancela la edición
+        cancelEditBtn.addEventListener("click", () => {
+          resetUserForm();
+
+          // Si es invitado o contador editando su perfil, ocultar el formulario
+          if (
+            loggedInUser.user_type === "invitado" ||
+            (loggedInUser.user_type === "contador" &&
+              userId.value &&
+              parseInt(userId.value) === loggedInUser.id)
+          ) {
+            document.getElementById("userForm").style.display = "none";
+          }
+
+          // Para todos los usuarios, mostrar el botón de toggle nuevamente si aplica
+          if (loggedInUser.user_type !== "invitado") {
+            const toggleFormBtn = document.getElementById("toggleFormBtn");
+            toggleFormBtn.textContent = "Añadir Usuario";
+            toggleFormBtn.style.display = "block";
+          }
+
+          // Ocultar el formulario para todos los casos
+          document.getElementById("userForm").style.display = "none";
+        });
+
+        // Resetea el formulario de usuario
+        const resetUserForm = () => {
+          userId.value = "";
+          username.value = "";
+          password.value = "";
+          name.value = "";
+          userType.value = "invitado";
+
+          // Habilitar todos los campos
+          username.disabled = false;
+          userType.disabled = false;
+          document.querySelector(
+            'label[for="userType"]'
+          ).parentNode.style.opacity = "1";
+
+          // Limitar las opciones del tipo de usuario según el rol del usuario logueado
+          adjustUserTypeOptions();
+
+          saveUserBtn.textContent = "Guardar Usuario";
+          cancelEditBtn.style.display = "none";
+
+          // Restaurar el botón de toggle para usuarios no invitados
+          const toggleFormBtn = document.getElementById("toggleFormBtn");
+          if (loggedInUser && loggedInUser.user_type !== "invitado") {
+            toggleFormBtn.textContent = "Añadir Usuario";
+            toggleFormBtn.style.display = "block";
+          }
+        };
+
+        // Ajusta las opciones del tipo de usuario según el rol del usuario logueado
+        const adjustUserTypeOptions = () => {
+          // Obtener el select de tipo de usuario
+          const userTypeSelect = document.getElementById("userType");
+
+          // Limpiar las opciones existentes
+          userTypeSelect.innerHTML = "";
+
+          // Si es administrador, mostrar todas las opciones
+          if (loggedInUser.user_type === "administrador") {
+            const options = [
+              { value: "administrador", text: "Administrador" },
+              { value: "contador", text: "Contador" },
+              { value: "vendedor", text: "Vendedor" },
+              { value: "invitado", text: "Invitado" },
+            ];
+
+            options.forEach((option) => {
+              const optionElement = document.createElement("option");
+              optionElement.value = option.value;
+              optionElement.textContent = option.text;
+              userTypeSelect.appendChild(optionElement);
+            });
+          }
+          // Si es contador, solo mostrar contador e invitado
+          else if (loggedInUser.user_type === "contador") {
+            const options = [
+              { value: "contador", text: "Contador" },
+              { value: "invitado", text: "Invitado" },
+            ];
+
+            options.forEach((option) => {
+              const optionElement = document.createElement("option");
+              optionElement.value = option.value;
+              optionElement.textContent = option.text;
+              userTypeSelect.appendChild(optionElement);
+            });
+          }
+          // Si es vendedor, mostrar vendedor e invitado
+          else if (loggedInUser.user_type === "vendedor") {
+            const options = [
+              { value: "vendedor", text: "Vendedor" },
+              { value: "contador", text: "Contador" },
+              { value: "invitado", text: "Invitado" },
+            ];
+
+            options.forEach((option) => {
+              const optionElement = document.createElement("option");
+              optionElement.value = option.value;
+              optionElement.textContent = option.text;
+              userTypeSelect.appendChild(optionElement);
+            });
+          }
+          // Para invitados, solo mostrar invitado
+          else {
+            const optionElement = document.createElement("option");
+            optionElement.value = "invitado";
+            optionElement.textContent = "Invitado";
+            userTypeSelect.appendChild(optionElement);
+          }
+        };
+
+        // Traduce el tipo de usuario
+        const translateUserType = (type) => {
+          const types = {
+            administrador: "Administrador",
+            contador: "Contador",
+            vendedor: "Vendedor",
+            invitado: "Invitado",
+            admin: "Administrador",
+            user: "Usuario Regular",
+            guest: "Invitado",
+          };
+          return types[type] || type;
+        };
+
+        // Formatea la fecha
+        const formatDate = (dateString) => {
+          const options = {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          };
+          return new Date(dateString).toLocaleDateString("es-ES", options);
+        };
+
+        // Verifica si puede editar un usuario
+        const canEditUser = (id) => {
+          if (!loggedInUser) return false;
+          // El administrador puede editar a cualquier usuario
+          if (loggedInUser.user_type === "administrador") return true;
+          // El vendedor puede editar a cualquier usuario excepto al 1 (superadmin)
+          if (loggedInUser.user_type === "vendedor" && id !== 1) return true;
+          // El invitado y contador solo pueden editar su propio perfil
+          if (
+            (loggedInUser.user_type === "invitado" ||
+              loggedInUser.user_type === "contador") &&
+            id === loggedInUser.id
+          )
+            return true;
+          return false;
+        };
+
+        // Verifica si puede eliminar un usuario
+        const canDeleteUser = (id) => {
+          if (!loggedInUser) return false;
+          if (
+            loggedInUser.user_type === "administrador" &&
+            id !== loggedInUser.id &&
+            id !== 1
+          )
+            return true;
+          // Ni el contador ni los otros roles pueden eliminar usuarios
+          return false;
+        };
+
+        // Edita un usuario
+        window.editUser = async (id) => {
+          // Verificar permisos antes de intentar editar
+          if (!canEditUser(id)) {
+            alert("No tienes permiso para editar este usuario");
+            return;
+          }
+
+          try {
+            const response = await fetch(`api.php?action=get_user&id=${id}`);
+            const data = await response.json();
+
+            if (data.status === "success") {
+              // Mostrar el formulario si estaba oculto (para usuarios invitados)
+              document.getElementById("userForm").style.display = "block";
+
+              userId.value = data.user.id;
+              username.value = data.user.username;
+              password.value = "";
+              name.value = data.user.name;
+
+              // Ajustar las opciones del tipo de usuario
+              adjustUserTypeOptions();
+
+              // Intentar establecer el tipo de usuario, si la opción existe
+              const userTypeSelect = document.getElementById("userType");
+              const exists = Array.from(userTypeSelect.options).some(
+                (option) => option.value === data.user.user_type
+              );
+
+              if (exists) {
+                userType.value = data.user.user_type;
+              }
+
+              // Si es invitado, deshabilitar ciertos campos
+              if (
+                loggedInUser.user_type === "invitado" ||
+                (loggedInUser.user_type === "contador" &&
+                  id === loggedInUser.id)
+              ) {
+                username.disabled = true;
+                userType.disabled = true;
+                document.querySelector(
+                  'label[for="userType"]'
+                ).parentNode.style.opacity = "0.5";
+                saveUserBtn.textContent = "Actualizar Perfil";
+                document.getElementById("userFormTitle").textContent =
+                  "Editar Perfil";
+                // Ocultar el botón de toggle para evitar confusiones
+                document.getElementById("toggleFormBtn").style.display = "none";
+              } else {
+                username.disabled = false;
+                userType.disabled = false;
+                document.querySelector(
+                  'label[for="userType"]'
+                ).parentNode.style.opacity = "1";
+                saveUserBtn.textContent = "Actualizar Usuario";
+                document.getElementById("userFormTitle").textContent =
+                  "Editar Usuario";
+                // Cambiar el texto del botón de toggle para reflejar que estamos editando
+                const toggleFormBtn = document.getElementById("toggleFormBtn");
+                toggleFormBtn.textContent = "Cancelar";
+                toggleFormBtn.style.display = "none"; // Ocultar durante la edición
+              }
+
+              cancelEditBtn.style.display = "inline-block";
+
+              // Desplazamiento suave al formulario
+              document
+                .getElementById("userForm")
+                .scrollIntoView({ behavior: "smooth" });
+            } else {
+              alert("Error: " + data.message);
+            }
+          } catch (error) {
+            alert("Error al obtener datos del usuario: " + error.message);
+          }
+        };
+
+        // Elimina un usuario
+        window.deleteUser = async (id) => {
+          // Verificar permisos antes de intentar eliminar
+          if (!canDeleteUser(id)) {
+            alert("No tienes permiso para eliminar este usuario");
+            return;
+          }
+
+          if (!confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              `api.php?action=delete_user&id=${id}`,
+              {
+                method: "DELETE",
+              }
+            );
+
+            const data = await response.json();
+
+            if (data.status === "success") {
+              loadUsers();
+            } else {
+              alert("Error: " + data.message);
+            }
+          } catch (error) {
+            alert("Error al eliminar usuario: " + error.message);
+          }
+        };
+
+        // Verificar sesión y estado de BD al cargar
+        const checkSession = async () => {
+          try {
+            const response = await fetch("api.php?action=check_session");
+            const data = await response.json();
+
+            if (data.status === "success") {
+              loggedInUser = data.user;
+              loadUserInterface();
+              loadUsers();
+            } else {
+              // Verificar estado de la BD si no hay sesión
+              checkDbStatus();
+            }
+          } catch (error) {
+            console.error("Error al verificar sesión:", error);
+            checkDbStatus();
+          }
+        };
+
+        // Inicializar la aplicación
+        checkSession();
       });
     </script>
   </body>

@@ -127,4 +127,5 @@ function route_request() {
 }
 
 // Call the router
-route_request(); 
+route_request();
+?>

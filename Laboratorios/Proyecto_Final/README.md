@@ -2,13 +2,33 @@
 
 Sistema simple para gestión de usuarios con autenticación y operaciones CRUD.
 
-## Características
+## Ejemplo de Funcionamiento
 
-- Sistema de inicio de sesión con usuario y contraseña
-- Gestión de usuarios (crear, editar, eliminar)
-- Interfaz responsiva y moderna
-- Almacenamiento en MySQL
-- Sistema de permisos basado en roles
+Imagina que este sistema es como una tienda de juguetes, donde:
+
+- **Recepcionista (router.php)**: Escucha las solicitudes de los clientes y decide qué hacer.
+- **Especialista en Juguetes (users.php)**: Sabe todo sobre los juguetes (usuarios) y realiza las acciones necesarias.
+
+### Flujo de Trabajo
+
+1. **Llegada a la Tienda**: Un cliente llega y dice: "Quiero ver todos los juguetes."
+2. **Recepcionista**: El recepcionista escucha y dice: "¡Claro! Déjame verificar eso."
+3. **Llamada al Especialista**: El recepcionista llama al especialista en juguetes y le dice: "¿Puedes mostrarme todos los juguetes?"
+4. **Respuesta del Especialista**: El especialista busca en el almacén y le da al recepcionista la lista de juguetes.
+5. **Devolución al Cliente**: El recepcionista le dice al cliente: "Aquí tienes la lista de todos los juguetes."
+
+### Funciones Clave
+
+- **Iniciar Sesión**: Los usuarios pueden iniciar sesión en el sistema. El recepcionista verifica las credenciales y llama al especialista para confirmar la identidad del usuario.
+- **Agregar Usuario**: Solo los administradores pueden agregar nuevos usuarios. El recepcionista recibe la solicitud y llama al especialista para que lo registre en la base de datos.
+- **Eliminar Usuario**: Los administradores pueden eliminar usuarios. El recepcionista verifica la solicitud y llama al especialista para que realice la eliminación.
+- **Ver Usuarios**: Cualquier usuario autenticado puede ver la lista de usuarios. El recepcionista llama al especialista para obtener la información y la devuelve al cliente.
+
+### Ventajas de Este Enfoque
+
+- **Organización**: Separar la lógica de enrutamiento y la lógica de negocio mejora la organización del código.
+- **Mantenibilidad**: Facilita el mantenimiento y la actualización del sistema, ya que cada parte tiene una responsabilidad clara.
+- **Seguridad**: Permite implementar medidas de seguridad más efectivas al manejar la autenticación y autorización de manera centralizada.
 
 ## Estructura del Proyecto
 
@@ -32,11 +52,11 @@ Proyecto_Final/
 
 ## Instrucciones de Instalación
 
-1. Clonar o descargar este repositorio
-2. Colocar los archivos en un servidor web con PHP (ej. XAMPP, WAMP)
-3. Asegurarse de tener MySQL funcionando
-4. Abrir el navegador y acceder a la aplicación
-5. El sistema creará automáticamente la base de datos y las tablas necesarias
+1. Clonar o descargar este repositorio.
+2. Colocar los archivos en un servidor web con PHP (ej. XAMPP, WAMP).
+3. Asegurarse de tener MySQL funcionando.
+4. Abrir el navegador y acceder a la aplicación.
+5. El sistema creará automáticamente la base de datos y las tablas necesarias.
 
 ## Credenciales por Defecto
 

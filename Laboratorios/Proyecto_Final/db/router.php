@@ -83,10 +83,15 @@ function route_request() {
             case 'update_user':
                 $userData = json_decode(file_get_contents('php://input'), true);
                 
-                // Si no es administrador y está intentando editar otro usuario, denegar
+                // Si no es administrador y está intentando editar otro usuario, verificar permisos adicionales
                 if (!check_permission(1) && $_SESSION['user_id'] != $userData['id']) {
-                    echo json_encode(['status' => 'error', 'message' => 'Permission denied', 'code' => 'permission_denied']);
-                    break;
+                    // Los vendedores pueden editar a cualquier usuario excepto al administrador (ID 1)
+                    if ($_SESSION['user_type'] == 'vendedor' && $userData['id'] != 1) {
+                        // Permitir continuar
+                    } else {
+                        echo json_encode(['status' => 'error', 'message' => 'Permission denied', 'code' => 'permission_denied']);
+                        break;
+                    }
                 }
                 
                 // Si no es administrador y está intentando cambiar su propio tipo de usuario, denegar

@@ -1,0 +1,35 @@
+@startuml
+class Usuario {
+    - id: int
+    - username: string
+    - password: string
+    - name: string
+    - userType: string
+    + login(): boolean
+    + logout(): void
+    + updateProfile(): void
+}
+
+class Administrador {
+    + addUser(): void
+    + deleteUser(): void
+    + viewUsers(): List<Usuario>
+}
+
+class Contador {
+    + viewOwnProfile(): Usuario
+}
+
+class Vendedor {
+    + editUser(): void
+}
+
+class Invitado {
+    + viewOwnProfile(): Usuario
+}
+
+Usuario <|-- Administrador
+Usuario <|-- Contador
+Usuario <|-- Vendedor
+Usuario <|-- Invitado
+@enduml

@@ -628,73 +628,88 @@ function deleteUser(id) {
 
 // Conexión con la base de datos
 class ApiService {
-  constructor(baseUrl = "") {
-    this.baseUrl = baseUrl;
+  constructor() {
+    this.baseUrl = "db/router.php"; // Cambiado de api.php a db/router.php
   }
 
-  // Método para realizar llamadas a la API
   async fetchApi(endpoint, method = "GET", data = null) {
-    const url = `${this.baseUrl}${endpoint}`;
-    const options = {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // Incluir cookies en la solicitud para mantener la sesión PHP
-      credentials: "same-origin",
-    };
-
-    if (data && (method === "POST" || method === "PUT")) {
-      options.body = JSON.stringify(data);
-    }
-
     try {
+      const url = endpoint.startsWith("http")
+        ? endpoint
+        : endpoint.includes("?")
+        ? endpoint
+        : `${this.baseUrl}?${new URLSearchParams(endpoint).toString()}`;
+
+      const options = {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "same-origin", // Para enviar cookies de sesión
+      };
+
+      if (data) {
+        options.body = JSON.stringify(data);
+      }
+
       const response = await fetch(url, options);
       const result = await response.json();
-      return result;
+
+      // Convertir el formato de respuesta al formato interno
+      return {
+        success: result.status === "success",
+        data: result.users || result.user || result.message || result,
+        message: result.message || "",
+        error_code: result.code || "",
+      };
     } catch (error) {
-      console.error("Error en la llamada a la API:", error);
+      console.error("API Error:", error);
       return {
         success: false,
-        message: "Error en la conexión con el servidor",
+        message: error.message || "Error de red",
+        error_code: "NETWORK_ERROR",
       };
     }
   }
 
-  // Verificar si hay una sesión activa
-  async checkSession() {
-    return this.fetchApi("api.php?action=check_session");
+  // Comprobar si hay una sesión activa
+  checkSession() {
+    return this.fetchApi(`${this.baseUrl}?action=check_session`);
   }
 
-  // Verificar permisos
-  async checkPermission(level) {
-    return this.fetchApi(`api.php?action=check_permission&level=${level}`);
+  // Comprobar si el usuario tiene un nivel de permiso específico
+  checkPermission(level) {
+    return this.fetchApi(
+      `${this.baseUrl}?action=check_permission&level=${level}`
+    );
   }
 
   // Cerrar sesión
-  async logout() {
-    return this.fetchApi("api.php?action=logout");
+  logout() {
+    return this.fetchApi(`${this.baseUrl}?action=logout`);
   }
 
-  // Método para obtener los tipos de usuario disponibles
-  async getUserTypes() {
-    return this.fetchApi("api.php?action=get_user_types");
+  // Obtener los tipos de usuario disponibles
+  getUserTypes() {
+    return this.fetchApi(`${this.baseUrl}?action=get_user_types`);
   }
 
-  // Métodos específicos para usuarios
-  async login(username, password) {
-    return this.fetchApi("api.php?action=login", "POST", {
+  // Iniciar sesión
+  login(username, password) {
+    return this.fetchApi(`${this.baseUrl}?action=login`, "POST", {
       username,
       password,
     });
   }
 
-  async getUsers() {
-    return this.fetchApi("api.php?action=get_users");
+  // Obtener todos los usuarios
+  getUsers() {
+    return this.fetchApi(`${this.baseUrl}?action=get_users`);
   }
 
-  async addUser(username, password, name, userType) {
-    return this.fetchApi("api.php?action=add_user", "POST", {
+  // Agregar un nuevo usuario
+  addUser(username, password, name, userType) {
+    return this.fetchApi(`${this.baseUrl}?action=add_user`, "POST", {
       username,
       password,
       name,
@@ -702,8 +717,9 @@ class ApiService {
     });
   }
 
-  async updateUser(id, username, password, name, userType) {
-    return this.fetchApi("api.php?action=update_user", "POST", {
+  // Actualizar un usuario existente
+  updateUser(id, username, password, name, userType) {
+    return this.fetchApi(`${this.baseUrl}?action=update_user`, "POST", {
       id,
       username,
       password,
@@ -712,8 +728,9 @@ class ApiService {
     });
   }
 
-  async deleteUser(id) {
-    return this.fetchApi("api.php?action=delete_user", "POST", { id });
+  // Eliminar un usuario
+  deleteUser(id) {
+    return this.fetchApi(`${this.baseUrl}?action=delete_user`, "POST", { id });
   }
 }
 
